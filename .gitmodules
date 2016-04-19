@@ -1,0 +1,3 @@
+[submodule "lib/simple-socket"]
+	path = lib/simple-socket
+	url = git@github.com:acburdine/simple-socket.git
