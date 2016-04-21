@@ -14,15 +14,15 @@
 /* changes the current working directory */
 /* complies with the POSIX standards for the cd command */
 int cd(char *args) {
-	/* if no arguments and no $HOME */
-	/* do nothing */
+    /* if no arguments and no $HOME */
+    /* do nothing */
 
-	/* if no arguments and $HOME not empty */
-	/* go to $HOME */
+    /* if no arguments and $HOME not empty */
+    /* go to $HOME */
 
-	/* if directory begins with / */
-	/* set curpath to directory */
-	
-	/* else */
-	return 0;
+    /* if directory begins with / */
+    /* set curpath to directory */
+    
+    /* else */
+    return 0;
 }
