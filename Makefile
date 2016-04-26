@@ -8,13 +8,14 @@ CC=gcc
 # the C compiler flags
 CFLAGS=-c -Wall
 
-LIBS_DIR = libs
+LIBS_DIR = lib
 SRC_DIR = src
+BIN_DIR = bin
 
-.PHONY: libs
+.PHONY: lib
 .PHONY: src
 
-all: src libs
+all: libs src
 
 libs:
 	$(MAKE) -C $(LIBS_DIR)
@@ -23,5 +24,5 @@ src:
 	$(MAKE) -C $(SRC_DIR)
 
 clean:
-	$(MAKE) -C $(TESTS_DIR) clean
+	$(MAKE) -C $(LIBS_DIR) clean
 	$(MAKE) -C $(SRC_DIR) clean
