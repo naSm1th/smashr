@@ -33,6 +33,7 @@
 
 # Our binary files
 echo echod
+smashr smashd
 
 # vim swap files
 *.swp
