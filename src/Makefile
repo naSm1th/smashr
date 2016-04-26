@@ -6,7 +6,7 @@
 # our C compiler
 CC=gcc
 # the C compiler flags
-CFLAGS=-c -Wall
+CFLAGS=-Wall
 
 BIN_DIR=../bin
 LIBS_DIR=../lib

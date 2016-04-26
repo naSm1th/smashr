@@ -32,8 +32,8 @@
 *.dSYM/
 
 # Our binary files
-echo echod
-smashr smashd
+*echo *echod
+*smashr *smashd
 
 # vim swap files
 *.swp
