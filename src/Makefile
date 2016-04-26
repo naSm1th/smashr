@@ -8,17 +8,20 @@ CC=gcc
 # the C compiler flags
 CFLAGS=-c -Wall
 
+BIN_DIR=../bin
+LIBS_DIR=../lib
+
 all: smashr smashd
 
 smashr: smashr.o
-	$(CC) -o $(BIN_DIR)/smashr smashr.o
+	$(CC) -o $(BIN_DIR)/smashr smashr.o $(LIBS_DIR)/simple-socket/client.o
 
 smashd: smashd.o
-	$(CC) -o $(BIN_DIR)/smashd smashr.o
+	$(CC) -o $(BIN_DIR)/smashd smashd.o $(LIBS_DIR)/simple-socket/server.o
 
-smashr.o: smashr.c smashr.h
+smashr.o: smashr.c
 
-smashd.o: smashd.c smashd.h
+smashd.o: smashd.c
 
 clean:
 	rm -rf *.o
