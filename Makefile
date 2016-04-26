@@ -6,7 +6,7 @@
 # our C compiler
 CC=gcc
 # the C compiler flags
-CFLAGS=-c -Wall
+CFLAGS=-Wall
 
 LIBS_DIR = lib
 SRC_DIR = src

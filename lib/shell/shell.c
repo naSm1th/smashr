@@ -36,7 +36,8 @@ int main (int argc, char **argv) {
 			cwd = (char *)realloc(cwd, i*CWD_LEN*sizeof(char));
 		}
 		/* print the prompt */
-		printf("SmSH:%s>", cwd);
+		printf("SmASHR:%s> ", cwd);
+		fflush(NULL);
 		/* get user input and parse */
 		while (1) {
 			fgets(buffer, BUFSIZE, stdin);
