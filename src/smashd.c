@@ -17,17 +17,23 @@
 int serverFd;
 char *cmd;
 
+/* this will be executed in the child process */
 void shell_exec(int fd) {
-    
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDIN_FILENO);
     dup2(fd, STDERR_FILENO);
 
-    close(fd);
-
+    setbuf(stdout, NULL);
     system(cmd);
+    
+    /* tell the client to close the socket */
+    /* we are sending the end of transmission character */
+    char data[] = {4, '\0'};
+    write(STDIN_FILENO, data, 1);
+    close(fd);
 }
 
+/* our main function */
 int main(int argc, char **argv) {
     int port;
 
@@ -44,10 +50,12 @@ int main(int argc, char **argv) {
         port = 2368;
     }
 
+    /* set up the socket */
     serverFd = server_setup(port);
 
-    printf("Smash dameon listening on port %d\n", port);
-
+    printf("Smash daemon listening on port %d\n", port);
+    
+    /* loop until ctrl-c, adding clients */
     server_listen(&shell_exec);
 
     exit(1);
