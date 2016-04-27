@@ -25,17 +25,13 @@ int main (int argc, char **argv) {
 	char *line = NULL;
 	/* the filename and arguments */
 	char **args;
-	
+
 	/* loop forever */
 	while (1) {
 		/* get the current working directory */
-		cwd = (char *)malloc(CWD_LEN*sizeof(char));
-		int i;
-		for (i = 2; getcwd(cwd, (i-1)*CWD_LEN*sizeof(char)) == NULL;
-				i++) {
-			cwd = (char *)realloc(cwd, i*CWD_LEN*sizeof(char));
-		}
-		/* print the prompt */
+		cwd = getCurrentWorkingDirectory();
+
+        /* print the prompt */
 		printf("SmASHR:%s> ", cwd);
 		fflush(NULL);
 		/* get user input and parse */
@@ -47,23 +43,23 @@ int main (int argc, char **argv) {
 				*line = '\0';
 			}
 			else {
-				line = (char *)realloc(line, strlen(line) 
+				line = (char *)realloc(line, strlen(line)
 						+ strlen(buffer) + 1);
 			}
-			
+
 			line = strcat(line, buffer);
 
 			/* see if line is done */
-			if (strlen(buffer) + 1 <  BUFSIZE || 
-					(strlen(buffer) + 1 == BUFSIZE && 
+			if (strlen(buffer) + 1 <  BUFSIZE ||
+					(strlen(buffer) + 1 == BUFSIZE &&
 					 buffer[BUFSIZE-2] == '\n')) {
 				/* we're done with this line */
 				break;
 			}
 		}
-		
+
 		char *tmpLine = line;
-		
+
 		/* split the line into the file and args */
 		/* thanks to http://www.tutorialspoint.com/c_standard_library/
 		   	c_function_strtok.htm */
@@ -74,7 +70,9 @@ int main (int argc, char **argv) {
 		if (args[0] == '\0') {
 			continue;
 		}
-		
+
+        int i;
+
 		for (i = 1; (args[i] = strtok(NULL, " \n\t")) != NULL; i++) {
 			args = realloc(args, (i + 2) * sizeof(char *));
 		}
@@ -86,7 +84,6 @@ int main (int argc, char **argv) {
 		/* clean up */
 		free(args);
 		free(line);
-		free(cwd);
 		line = NULL;
 	}
 }
@@ -111,7 +108,7 @@ void execute(char **args, int numArgs) {
 	/* let's see if we need to handle the command internally */
 	/* commands include: cd, exit */
 	if (strcmp(args[0], "cd") == 0) {
-		/* TODO: change the working directory */
+        cd(args[1]);
 	}
 	else if (strcmp(args[0], "exit") == 0) {
 		/* exit */
@@ -131,12 +128,12 @@ void execute(char **args, int numArgs) {
 		/*    children to finish executing/writing to stdout */
 		/* adding a usleep seems to help... but it's not ideal */
 		read(pidPipe[0], &pid, sizeof(pid));
-		
+
 		waitpid(pid, NULL, 0);
-		
+
 		while ((pid = wait(NULL)) != -1) {
 		}
-		
+
 		if (numPipes != 0) {
 			usleep(100000);
 		}
@@ -157,14 +154,14 @@ void executeExternal(char **args, int numPipes, int *myPipe, int *pidPipe) {
 			/* replace stdin with the pipe */
 			dup2(myPipe[0], STDIN_FILENO);
 			close(myPipe[0]);
-			
+
 		}
 
 		/* make new pipe for child process */
 		if (numPipes > 0) {
 			int newPipe[2];
 			pipe(newPipe);
-		
+
 			/* execute the next command */
 			char **tmpArgs = args;
 
@@ -174,14 +171,14 @@ void executeExternal(char **args, int numPipes, int *myPipe, int *pidPipe) {
 			while (tmpArgs[0] == NULL) {
 				tmpArgs++;
 			}
-			
+
 			executeExternal(tmpArgs, numPipes-1, newPipe, pidPipe);
-		
+
 			/* replace stdout with this pipe */
 			dup2(newPipe[1], STDOUT_FILENO);
 			close(newPipe[1]);
 			close(newPipe[0]);
-	
+
 		}
 		if (numPipes == 0) {
 			int pid = getpid();
@@ -189,7 +186,7 @@ void executeExternal(char **args, int numPipes, int *myPipe, int *pidPipe) {
 		}
 		close(pidPipe[1]);
 		close(pidPipe[0]);
-	
+
 		/* execute file with args */
 		int returnStatus = execvp(args[0], args);
 

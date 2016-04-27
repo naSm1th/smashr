@@ -6,17 +6,17 @@
 # our C compiler
 CC=gcc
 # the C compiler flags
-CFLAGS=-Wall
+CFLAGS=-c -Wall
 
 # our binary output directory
 BIN_DIR=../../bin
 
-shell: shell.o cd.o
-	$(CC) -o $(BIN_DIR)/$@ $<
+shell: cd.o shell.o
+	$(CC) -o $(BIN_DIR)/$@ shell.o cd.o
 
 shell.o: shell.h shell.c
 
-cd.o: shell.h cd.c
+cd.o: cd.c
 
-clean: 
+clean:
 	rm *.o $(BIN_DIR)/*
